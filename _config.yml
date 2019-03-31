@@ -224,4 +224,8 @@ plugins:
   - jekyll-sitemap
   - jemoji
   
+  
+## Alex He Define  
 theme: jekyll-text-theme
+text_skin: ocean # "default" (default), "dark", "forest", "ocean", "chocolate", "orange"
+
