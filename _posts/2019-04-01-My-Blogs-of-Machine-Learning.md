@@ -1,6 +1,7 @@
 ---
 layout: article
 title: My Blogs of Machine Learning
+tags: Machine Learning
 ---
 
 
