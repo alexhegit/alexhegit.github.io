@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Alex He Blog</title>
+    <title>Alex He&#39;s Blog</title>
     <link>https://alexhegit.github.io/</link>
-    <description>Recent content on Alex He Blog</description>
+    <description>Recent content on Alex He&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 18 Oct 2023 16:13:32 +0800</lastBuildDate><atom:link href="https://alexhegit.github.io/index.xml" rel="self" type="application/rss+xml" />
@@ -13,8 +13,7 @@
       <pubDate>Wed, 18 Oct 2023 16:13:32 +0800</pubDate>
       
       <guid>https://alexhegit.github.io/posts/my-first-post/</guid>
-      <description>Welcome To My Blog 🔗Here, I will share my experiences, practices and interests with you.
-在这里，我将与大家分享我的经验、实践和兴趣。</description>
+      <description>Welcome To My Blog 🔗Here, I will share my experiences, practices and interests with you. 在这里，我将与大家分享我的经验、实践和兴趣。</description>
     </item>
     
   </channel>
