@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Alex He&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Oct 2023 16:13:32 +0800</lastBuildDate><atom:link href="https://alexhegit.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 18 Oct 2023 21:04:08 +0800</lastBuildDate><atom:link href="https://alexhegit.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Build Blog with Hugo&amp;GitHub</title>
+      <link>https://alexhegit.github.io/posts/build-blog-with-hugogithub/</link>
+      <pubDate>Wed, 18 Oct 2023 21:04:08 +0800</pubDate>
+      
+      <guid>https://alexhegit.github.io/posts/build-blog-with-hugogithub/</guid>
+      <description>利用github pages构建blog项目 🔗网上相关主题帖子较多，但缺乏从git工作流角度细节。本文可以帮助读者从git项目维护角度来理解和</description>
+    </item>
+    
     <item>
       <title>My First Post</title>
       <link>https://alexhegit.github.io/posts/my-first-post/</link>

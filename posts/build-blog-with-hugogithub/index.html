@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Build Blog with Hugo&amp;GitHub | Alex He&#39;s Blog</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="利用github pages构建blog项目 🔗网上相关主题帖子较多，但缺乏从git工作流角度细节。本文可以帮助读者从git项目维护角度来理解和">
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+  
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	  <a class="button" href="https://alexhegit.github.io/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Build Blog with Hugo&amp;GitHub</h1>
+
+    <div class="tip">
+        <time datetime="2023-10-18 21:04:08 &#43;0800 CST">2023年10月18日</time>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          2075字
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          5分钟
+        </span>
+    </div>
+
+    
+    
+        
+  
+    <aside class="toc">
+      <details>
+          <summary>Table of Contents
+          </summary>
+          <div>
+              <nav id="TableOfContents">
+  <ul>
+    <li><a href="#利用github-pages构建blog项目-1">利用github pages构建blog项目</a></li>
+    <li><a href="#使用hugo创建网站项目">使用hugo创建网站项目</a></li>
+    <li><a href="#将hugo网站项目连接到github">将hugo网站项目连接到github</a>
+      <ul>
+        <li><a href="#在项目目录下创建第一个patch引入刚刚创建的blog项目文件">在项目目录下，创建第一个patch引入刚刚创建的blog项目文件:</a></li>
+        <li><a href="#将hugo-blog项目提交到github">将hugo blog项目提交到github:</a></li>
+        <li><a href="#在blog项目目录下以git-submodule方式安装mini主题">在blog项目目录下，以git submodule方式安装mini主题</a></li>
+      </ul>
+    </li>
+    <li><a href="#添加首篇blog">添加首篇blog</a>
+      <ul>
+        <li><a href="#使用并修改mini的config">使用并修改mini的config</a></li>
+        <li><a href="#创建第一个post">创建第一个Post</a></li>
+        <li><a href="#将正式发布编译成静态网页">将正式发布编译成静态网页</a></li>
+      </ul>
+    </li>
+    <li><a href="#将生成的静态网页部署到github上">将生成的静态网页部署到github上</a>
+      <ul>
+        <li><a href="#将生成的blog网页托管至github-pages-repo">将生成的Blog网页托管至github pages repo</a></li>
+      </ul>
+    </li>
+    <li><a href="#一些问题及解决方法">一些问题及解决方法</a></li>
+  </ul>
+</nav>
+          </div>
+      </details>
+    </aside>
+  
+
+
+    
+
+
+    <div class="content">
+      <h1 id="利用github-pages构建blog项目">利用github pages构建blog项目 <a href="#%e5%88%a9%e7%94%a8github-pages%e6%9e%84%e5%bb%bablog%e9%a1%b9%e7%9b%ae" class="anchor">🔗</a></h1><p><strong>网上相关主题帖子较多，但缺乏从git工作流角度细节。本文可以帮助读者从git项目维护角度来理解和掌握操作过程，避免小坑</strong></p>
+<p>目前github pages上构建个人blog主流的框架工具有jekyll, hexo, hugo.
+通过比对，选择hugo来开发blog静态网站。关于三者的比较可以阅读 <a href="https://zhuanlan.zhihu.com/p/368407566" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/368407566</a></p>
+<hr>
+<h1 id="参考">参考： <a href="#%e5%8f%82%e8%80%83" class="anchor">🔗</a></h1><ul>
+<li>hugo官方网站： [https://gohugo.io/]</li>
+<li>hugo推荐主题：
+<ul>
+<li><a href="mini">https://themes.gohugo.io/themes/hugo-theme-cactus-plus/</a></li>
+<li><a href="cleanwhite">https://themes.gohugo.io/themes/hugo-theme-cleanwhite/</a></li>
+<li><a href="anatole">https://themes.gohugo.io/themes/anatole/</a></li>
+<li><a href="m10c">https://themes.gohugo.io/themes/hugo-theme-m10c/</a></li>
+<li><a href="minimo">https://themes.gohugo.io/themes/minimo/</a></li>
+</ul>
+</li>
+<li>使用 Hugo + Github 搭建个人博客：[https://zhuanlan.zhihu.com/p/105021100]</li>
+<li>Git中submodule的使用：[https://zhuanlan.zhihu.com/p/87053283]</li>
+</ul>
+<h1 id="step-by-step">Step By Step <a href="#step-by-step" class="anchor">🔗</a></h1><h2 id="利用github-pages构建blog项目-1">利用github pages构建blog项目 <a href="#%e5%88%a9%e7%94%a8github-pages%e6%9e%84%e5%bb%bablog%e9%a1%b9%e7%9b%ae-1" class="anchor">🔗</a></h2><p>例如我自己的项目名称为alexhegit-blog，后续讲解以此为例。
+<strong>NOTE</strong>：这里创建一个空项目，不要创建README。因为，后续用hugo创建网页项目时，hugo要求项目目录为空目录。 <br>
+<p class="markdown-image">
+  <img src="resources/image.png" alt="image.png"  />
+</p></p>
+<h2 id="使用hugo创建网站项目">使用hugo创建网站项目 <a href="#%e4%bd%bf%e7%94%a8hugo%e5%88%9b%e5%bb%ba%e7%bd%91%e7%ab%99%e9%a1%b9%e7%9b%ae" class="anchor">🔗</a></h2><p>创建一个同github blog项目同名的新目录，并用hugo初始化一个网站项目：
+<p class="markdown-image">
+  <img src="resources/image1.png" alt="image.png"  />
+</p></p>
+<p>常用目录用处如下</p>
+<table>
+<thead>
+<tr>
+<th>子目录名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>archetypes</td>
+<td>新文章默认模板</td>
+</tr>
+<tr>
+<td>config.toml</td>
+<td><code>Hugo</code>配置文档</td>
+</tr>
+<tr>
+<td>content</td>
+<td>存放所有<code>Markdown</code>格式的文章</td>
+</tr>
+<tr>
+<td>layouts</td>
+<td>存放自定义的<code>view</code>，可为空</td>
+</tr>
+<tr>
+<td>static</td>
+<td>存放图像、CNAME、css、js等资源，发布后该目录下所有资源将处于网页根目录</td>
+</tr>
+<tr>
+<td>themes</td>
+<td>存放下载的主题</td>
+</tr>
+</tbody>
+</table>
+<h2 id="将hugo网站项目连接到github">将hugo网站项目连接到github <a href="#%e5%b0%86hugo%e7%bd%91%e7%ab%99%e9%a1%b9%e7%9b%ae%e8%bf%9e%e6%8e%a5%e5%88%b0github" class="anchor">🔗</a></h2><h3 id="在项目目录下创建第一个patch引入刚刚创建的blog项目文件">在项目目录下，创建第一个patch引入刚刚创建的blog项目文件: <a href="#%e5%9c%a8%e9%a1%b9%e7%9b%ae%e7%9b%ae%e5%bd%95%e4%b8%8b%e5%88%9b%e5%bb%ba%e7%ac%ac%e4%b8%80%e4%b8%aapatch%e5%bc%95%e5%85%a5%e5%88%9a%e5%88%9a%e5%88%9b%e5%bb%ba%e7%9a%84blog%e9%a1%b9%e7%9b%ae%e6%96%87%e4%bb%b6" class="anchor">🔗</a></h3><pre><code>$ git init
+$ git commit -a -s
+</code></pre>
+<p><p class="markdown-image">
+  <img src="resources/image2.png" alt="image.png"  />
+</p></p>
+<h3 id="将hugo-blog项目提交到github">将hugo blog项目提交到github: <a href="#%e5%b0%86hugo-blog%e9%a1%b9%e7%9b%ae%e6%8f%90%e4%ba%a4%e5%88%b0github" class="anchor">🔗</a></h3><pre><code>$ git remote add origin git@github.com:alexhegit/alexhegit-blog.git
+$ git branch -M main
+$ git push -u origin main
+</code></pre>
+<p><strong>NOTE</strong>：关于远程ssh提交代码，这里假设您已经设置好了ssh key以及GPG key。具体操作可参考文末“一些问题及解决方法”或者github官方文档。</p>
+<h3 id="在blog项目目录下以git-submodule方式安装mini主题">在blog项目目录下，以git submodule方式安装mini主题 <a href="#%e5%9c%a8blog%e9%a1%b9%e7%9b%ae%e7%9b%ae%e5%bd%95%e4%b8%8b%e4%bb%a5git-submodule%e6%96%b9%e5%bc%8f%e5%ae%89%e8%a3%85mini%e4%b8%bb%e9%a2%98" class="anchor">🔗</a></h3><p>mini是一个简洁快速的轻量级主题</p>
+<pre><code>$ git submodule add https://github.com/nodejh/hugo-theme-mini.git themes/mini)
+提交相关改动：
+$ git commit -a -s
+$ git push -u origin main
+</code></pre>
+<p>到这一步为止，githug page(blog)是空的，访问结果404.
+<p class="markdown-image">
+  <img src="resources/image3.png" alt="image.png"  />
+</p></p>
+<h2 id="添加首篇blog">添加首篇blog <a href="#%e6%b7%bb%e5%8a%a0%e9%a6%96%e7%af%87blog" class="anchor">🔗</a></h2><h3 id="使用并修改mini的config">使用并修改mini的config <a href="#%e4%bd%bf%e7%94%a8%e5%b9%b6%e4%bf%ae%e6%94%b9mini%e7%9a%84config" class="anchor">🔗</a></h3><p>参考<a href="https://github.com/nodejh/hugo-theme-mini/blob/master/README.md" target="_blank" rel="noopener">https://github.com/nodejh/hugo-theme-mini/blob/master/README.md</a>相关操作，如下：
+在 <a href="https://github.com/nodejh/hugo-theme-mini/tree/master/exampleSite" target="_blank" rel="noopener">exampleSite</a> 目录中有一个 <a href="https://github.com/nodejh/hugo-theme-mini/blob/master/exampleSite/config.yaml" target="_blank" rel="noopener">config.yaml</a> 的配置文件，你可以将其复制到你的项目根目录中，将一些配置项修改为你的配置。这些配置都可以随意修改。</p>
+<pre><code>    &gt; ⚠️ 你需要删除这行配置： `themesDir: ../../` 。
+</code></pre>
+<h3 id="创建第一个post">创建第一个Post <a href="#%e5%88%9b%e5%bb%ba%e7%ac%ac%e4%b8%80%e4%b8%aapost" class="anchor">🔗</a></h3><pre><code>$hugo new posts/my-first-post.md
+该命令将在content目录下创建posts/my-first-post.md。然后，您可以根据需要修改该md文件。
+</code></pre>
+<p><p class="markdown-image">
+  <img src="resources/image4.png" alt="image.png"  />
+</p></p>
+<pre><code>每一个new post的md文件，包含了title/data等信息，可酌情修改。
+且默认都标记为draft，需要以-D参数方式针对Draft提供渲染服务。正式发布前，需要将&quot;draft true&quot;。修改&quot;draft false&quot;。
+</code></pre>
+<p><p class="markdown-image">
+  <img src="resources/image5.png" alt="image.png"  />
+</p></p>
+<pre><code>测试发布结果。-D表示draft方式运行， -t指定theme风格。
+$ hugo server -D -t mini
+</code></pre>
+<p><p class="markdown-image">
+  <img src="resources/image6.png" alt="image.png"  />
+</p></p>
+<pre><code>打开浏览器预览发布，输入http://localhost:1313 可看到结果。可反复修改，直至效果满意。
+</code></pre>
+<p><p class="markdown-image">
+  <img src="resources/image7.png" alt="image.png"  />
+</p></p>
+<h3 id="将正式发布编译成静态网页">将正式发布编译成静态网页 <a href="#%e5%b0%86%e6%ad%a3%e5%bc%8f%e5%8f%91%e5%b8%83%e7%bc%96%e8%af%91%e6%88%90%e9%9d%99%e6%80%81%e7%bd%91%e9%a1%b5" class="anchor">🔗</a></h3><pre><code>在项目更目录下运行&quot;hugo&quot;命令，完成后在子目录public中生成静态网页文件。
+</code></pre>
+<p><p class="markdown-image">
+  <img src="resources/image8.png" alt="image.png"  />
+</p></p>
+<h2 id="将生成的静态网页部署到github上">将生成的静态网页部署到github上 <a href="#%e5%b0%86%e7%94%9f%e6%88%90%e7%9a%84%e9%9d%99%e6%80%81%e7%bd%91%e9%a1%b5%e9%83%a8%e7%bd%b2%e5%88%b0github%e4%b8%8a" class="anchor">🔗</a></h2><pre><code>创建github pages repo
+以自己的github用户名创建一个github pages repo, 例如我的是alexhegit.github.io。具体步骤参考官方文档。
+</code></pre>
+<p><strong>NOTE</strong> 需要构建一个完全空的项目，不含README及LICENSE（文件）。否则，后续git submodule add时会报错。</p>
+<h3 id="将生成的blog网页托管至github-pages-repo">将生成的Blog网页托管至github pages repo <a href="#%e5%b0%86%e7%94%9f%e6%88%90%e7%9a%84blog%e7%bd%91%e9%a1%b5%e6%89%98%e7%ae%a1%e8%87%b3github-pages-repo" class="anchor">🔗</a></h3><h4 id="方法一将每次blog项目build出来的静态网站的文件从public拷贝到github-pages-repo">方法一：将每次Blog项目build出来的静态网站的文件从public拷贝到github pages repo。 <a href="#%e6%96%b9%e6%b3%95%e4%b8%80%e5%b0%86%e6%af%8f%e6%ac%a1blog%e9%a1%b9%e7%9b%aebuild%e5%87%ba%e6%9d%a5%e7%9a%84%e9%9d%99%e6%80%81%e7%bd%91%e7%ab%99%e7%9a%84%e6%96%87%e4%bb%b6%e4%bb%8epublic%e6%8b%b7%e8%b4%9d%e5%88%b0github-pages-repo" class="anchor">🔗</a></h4><ul>
+<li>先克隆github pages repo到本地</li>
+<li>将Blog网页项目build出来的所有文件从public目录拷贝至本地的github pages repo并进行提交。</li>
+</ul>
+<h4 id="方法二将github-pages-repo以submodule加入到blog网页项目中的public目录">方法二：将github pages repo以submodule加入到Blog网页项目中的public目录 <a href="#%e6%96%b9%e6%b3%95%e4%ba%8c%e5%b0%86github-pages-repo%e4%bb%a5submodule%e5%8a%a0%e5%85%a5%e5%88%b0blog%e7%bd%91%e9%a1%b5%e9%a1%b9%e7%9b%ae%e4%b8%ad%e7%9a%84public%e7%9b%ae%e5%bd%95" class="anchor">🔗</a></h4><ul>
+<li>因为之前构建Blog编译过网页，所以先要删除public目录</li>
+<li>将github pages repo以submodule加入的Blog网页项目</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    $ git submodule add git@github.com:alexhegit/alexhegit.github.io.git public
+    $ git commit -a -s
+</code></pre></div><ul>
+<li>重新build出静态网页文件
+$ hugo</li>
+<li>将build出的静态网页commit到github pages repo</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">    $ cd public
+    $ git init
+    $ git commit -a -s
+    $ git branch -M main
+    $ git push -u origin main
+</code></pre></div><p>提交完成后，所见即所得 <a href="https://alexhegit.github.io" target="_blank" rel="noopener">Alex He&rsquo;s Blog</a></p>
+<h2 id="一些问题及解决方法">一些问题及解决方法 <a href="#%e4%b8%80%e4%ba%9b%e9%97%ae%e9%a2%98%e5%8f%8a%e8%a7%a3%e5%86%b3%e6%96%b9%e6%b3%95" class="anchor">🔗</a></h2><ul>
+<li>WSL-Ubuntu系统中git使用报错问题解决：GnuTLS recv error (-110): The TLS connection was non-properly terminated   <a href="https://zhuanlan.zhihu.com/p/624555732" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/624555732</a></li>
+<li>如何为Git生成并设置GPG签名:
+<ul>
+<li>
+<p>操作参考（已验证）<a href="https://zhuanlan.zhihu.com/p/76861431" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/76861431</a></p>
+</li>
+<li>
+<p>官方文档：</p>
+<p><a href="https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account" target="_blank" rel="noopener">adding-a-gpg-key-to-your-github-account</a></p>
+<p><a href="https://docs.github.com/zh/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key" target="_blank" rel="noopener">telling-git-about-your-signing-key</a></p>
+</li>
+</ul>
+</li>
+<li>如何插入图片: <a href="https://www.yuweihung.com/posts/2021/hugo-blog-picture/" target="_blank" rel="noopener">Hugo 博客插入图片的方法</a></li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的github blog获取更多经验分享:</strong>
+<a href="https://alexhegit.github.io" target="_blank" rel="noopener">https://alexhegit.github.io</a></p>
+<p>您也可以在 <a href="https://flowus.cn/share/2208be9d-2025-4c78-b6e1-563ded2a1d98" target="_blank" rel="noopener">FlowUs 息流</a>来观看该文原始版本（可视化可能更佳）</p>
+
+    </div>
+
+    
+    
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "your-disqus-shortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </div>
+
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/alexhegit" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="your-github-link" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="your-github-link" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+    
+       © Copyright 
+       2023 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Alex He &lt;heye_dev@163.com&gt;
+    
+    </div>
+
+    
+      <div class="powerby">
+        Powered by <a href='http://www.gohugo.io/'>Hugo</a> Theme By <a href='https://github.com/nodejh/hugo-theme-mini'>nodejh</a>
+      </div>
+    
+</footer>
+
+
+
+  </body>
+</html>
