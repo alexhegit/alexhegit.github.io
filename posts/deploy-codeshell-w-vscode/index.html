@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <title>Deploy CodeShell W VSCode | Alex He&#39;s Blog</title>
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="本地化部署Coding Copilot - CodeShell with VSCode 🔗Coding Copilot LLM CodeShell VSCode CodeShell是刚刚推出的代码辅助LLM。抛开性能不谈，其显著优势在于可以借助ll">
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+ 
+  
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>首页</a>
+	
+	<a href="/posts">归档</a>
+	<a href="/tags">标签</a>
+	<a href="/about">关于</a>
+
+	
+
+	
+	  <a class="button" href="https://alexhegit.github.io/index.xml">订阅</a>
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Deploy CodeShell W VSCode</h1>
+
+    <div class="tip">
+        <time datetime="2023-10-27 13:10:52 &#43;0800 CST">2023年10月27日</time>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          1360字
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          3分钟
+        </span>
+    </div>
+
+    
+    
+        
+  
+    <aside class="toc">
+      <details>
+          <summary>Table of Contents
+          </summary>
+          <div>
+              <nav id="TableOfContents">
+  <ul>
+    <li><a href="#codeshell-introduction">CodeShell Introduction</a></li>
+    <li><a href="#deploy-codeshell-with-llamacpp">Deploy CodeShell with llama.cpp</a>
+      <ul>
+        <li><a href="#build-llamacpp-project-wsl2">Build llama.cpp project (WSL2)</a></li>
+        <li><a href="#downloand-codeshell-model-filesweights">Downloand CodeShell Model files(weights)</a></li>
+        <li><a href="#convert-the-model-to-gguf">Convert the model to gguf</a></li>
+      </ul>
+    </li>
+    <li><a href="#install-codeshell-extention-of-vscode">Install CodeShell Extention of VSCode</a>
+      <ul>
+        <li><a href="#setup-codeshell-extention">Setup CodeShell Extention</a></li>
+      </ul>
+    </li>
+    <li><a href="#start-the-model-inference-server-by-llamacpp">Start the model inference server by llama.cpp</a></li>
+    <li><a href="#use-it-in-vscode">Use it in VSCode</a></li>
+    <li><a href="#reference">Reference</a></li>
+    <li><a href="#预告">预告：</a></li>
+  </ul>
+</nav>
+          </div>
+      </details>
+    </aside>
+  
+
+
+    
+
+
+    <div class="content">
+      <h1 id="本地化部署coding-copilot---codeshell-with-vscode">本地化部署Coding Copilot - CodeShell with VSCode <a href="#%e6%9c%ac%e5%9c%b0%e5%8c%96%e9%83%a8%e7%bd%b2coding-copilot---codeshell-with-vscode" class="anchor">🔗</a></h1><p><code>Coding Copilot</code> <code>LLM</code> <code>CodeShell</code> <code>VSCode</code></p>
+<p>CodeShell是刚刚推出的代码辅助LLM。抛开性能不谈，<strong>其显著优势在于可以借助llama.cpp或者TGI(Text Generation Interface)以及VSCode Extention来本地化部署来提升生产力</strong>，得益于llama.cpp的项目，其相关部署步骤也比较简单（个人认为TGI相对要复杂一些）。而同类型的LLM如CodeGeeX的VSCode Extention需要依赖云端部署的模型推理服务。虽然CodeGeeX远程服务目前是免费的，但需要申请账号且每日有使用次数限制。至于其他众多依赖于GPT的coding copilot插件则必须要付费买KEY。</p>
+<h2 id="codeshell-introduction">CodeShell Introduction <a href="#codeshell-introduction" class="anchor">🔗</a></h2><p>HG Model Card: <a href="https://huggingface.co/WisdomShell/CodeShell-7B-Chat" target="_blank" rel="noopener">https://huggingface.co/WisdomShell/CodeShell-7B-Chat</a>
+Github Home Page: <a href="https://github.com/WisdomShell" target="_blank" rel="noopener">https://github.com/WisdomShell</a></p>
+<p>CodeShell是北京大学知识计算实验室联合四川天府银行AI团队研发的多语言代码大模型基座。CodeShell具有70亿参数，在五千亿Tokens进行了训练，上下文窗口长度为8192。在权威的代码评估Benchmark（HumanEval与MBPP）上，CodeShell取得同等规模最好的性能。与此同时，我们提供了与CodeShell配套的部署方案与IDE插件，请参考代码库CodeShell。</p>
+<p>CodeShell is a multi-language code LLM developed by the Knowledge Computing Lab of Peking University. CodeShell has 7 billion parameters and was trained on 500 billion tokens with a context window length of 8194. On authoritative code evaluation benchmarks (HumanEval and MBPP), CodeShell achieves the best performance of its scale. Meanwhile, we provide deployment solutions and IDE plugins that complement CodeShell. Please refer to the CodeShell code repository for more details. This repository is for the CodeShell-7B-Chat model.</p>
+<p>本次开源的模型如下：</p>
+<p>CodeShell Base：CodelShell底座模型，具有强大的代码基础能力。
+CodeShell Chat：CodelShell对话模型，在代码问答、代码补全等下游任务重性能优异。
+CodeShell Chat 4bit：CodelShell对话模型4bit量化版本，在保证模型性能的前提下内存消耗更小，速度更快。
+CodeShell CPP：CodelShell对话模型CPP版本，支持开发者在没有GPU的个人电脑中使用。注意，CPP版本同样支持量化操作，用户可以在最小内存为8G的个人电脑中运行CodeShell。</p>
+<h2 id="deploy-codeshell-with-llamacpp">Deploy CodeShell with llama.cpp <a href="#deploy-codeshell-with-llamacpp" class="anchor">🔗</a></h2><h3 id="build-llamacpp-project-wsl2">Build llama.cpp project (WSL2) <a href="#build-llamacpp-project-wsl2" class="anchor">🔗</a></h3><p>WisdomShell fork it from ggerganov/llama.cpp and add somethings to support codeshell model.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ git clone git clone https://github.com/WisdomShell/llama_cpp_for_codeshell.git
+
+$ cd llama_cpp_for_codeshell
+</code></pre></div><p>Compile with CPU (default)</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ make
+</code></pre></div><p>OR Compile with CUDA (if you have)</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ make LLAMA_CUBLAS=1 LLAMA_CUDA_NVCC=/usr/local/cuda/bin/nvcc
+</code></pre></div><p>llama.cpp provide many options for compile in Makefile for you as need.</p>
+<h3 id="downloand-codeshell-model-filesweights">Downloand CodeShell Model files(weights) <a href="#downloand-codeshell-model-filesweights" class="anchor">🔗</a></h3><p>Download the Model files from HG. Here I use CodeShell-7B-Chat.</p>
+<h3 id="convert-the-model-to-gguf">Convert the model to gguf <a href="#convert-the-model-to-gguf" class="anchor">🔗</a></h3><p>llama_cpp_for_codeshell.git provide many scripts to convert HG model(files download from hugggingface) to gguf format.</p>
+<p>The convert-codeshell-hf-to-gguf.py is for codeshell.
+Check the options:
+<p class="markdown-image">
+  <img src="/resources/image-1.png" alt="Alt text"  />
+</p></p>
+<p>Convert it:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ./convert-codeshell-hf-to-gguf.py /mnt/d/LLM_Files/codeshell/CodeShell-7B-Chat/ 1 --outfile ./models/codeshell-7b-chat-f16.gguf
+</code></pre></div><p><p class="markdown-image">
+  <img src="/resources/image.png" alt="Alt text"  />
+</p></p>
+<p><p class="markdown-image">
+  <img src="/resources/image-2.png" alt="Alt text"  />
+</p></p>
+<p>Quantize it:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ./quantize ./models/codeshell-7b-chat-f16.gguf ./models/codeshell-7b-chat-q4_0.gguf  q4_0
+</code></pre></div><p>Compile the size of model file. Almost 4 times between the f16 and q4_0 format.</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ du -sh ./models/codeshell-7b-chat-*
+15G     ./models/codeshell-7b-chat-f16.gguf
+4.3G    ./models/codeshell-7b-chat-q4_0.gguf
+</code></pre></div><p>Test it:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">Simple Inference:
+$ ./main -m ./models/codeshell-7b-chat-q4_0.gguf -n 128
+
+Simple Chat:
+$ ./main -m ./models/codeshell-7b-chat-q4_0.gguf -n 1024 --repeat_penalty 1.0 --color -i -r &#34;User:&#34; -f prompts/chat-with-bob.txt
+
+</code></pre></div><p><p class="markdown-image">
+  <img src="/resources/image-3.png" alt="Alt text"  />
+</p></p>
+<h2 id="install-codeshell-extention-of-vscode">Install CodeShell Extention of VSCode <a href="#install-codeshell-extention-of-vscode" class="anchor">🔗</a></h2><p>It&rsquo;s so easy to install CodeShell Extention in VSCode. Got it from the Extentions Market as others you have done before.</p>
+<h3 id="setup-codeshell-extention">Setup CodeShell Extention <a href="#setup-codeshell-extention" class="anchor">🔗</a></h3><p>The CodeShell Extention support two model inference server backend, one is llama.cpp+CPU and another is TGI+GPU. Here I will show the llama.cpp+CPU which is the default backend.</p>
+<p>Make sure the settings like this:
+<p class="markdown-image">
+  <img src="/resources/image-5.png" alt="Alt text"  />
+</p></p>
+<h2 id="start-the-model-inference-server-by-llamacpp">Start the model inference server by llama.cpp <a href="#start-the-model-inference-server-by-llamacpp" class="anchor">🔗</a></h2><p>The llama.cpp provide the &lsquo;server&rsquo; bin to start the inference server.
+Server it:</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ./server -m ./models/codeshell-7b-chat-q4_0.gguf -n 1024
+</code></pre></div><p>The default URL of server is http://127.0.0.1:8080, Open it in broswer will see it like:
+<p class="markdown-image">
+  <img src="/resources/image-4.png" alt="Alt text"  />
+</p></p>
+<p>Then you can use it in brower or from VSCode</p>
+<p>More info: <a href="https://github.com/WisdomShell/llama_cpp_for_codeshell/blob/master/examples/server/README.md" target="_blank" rel="noopener">https://github.com/WisdomShell/llama_cpp_for_codeshell/blob/master/examples/server/README.md</a></p>
+<h2 id="use-it-in-vscode">Use it in VSCode <a href="#use-it-in-vscode" class="anchor">🔗</a></h2><p>Codeshell support</p>
+<ol>
+<li>Coding Completing</li>
+<li>Coding Copilot</li>
+<li>QA</li>
+</ol>
+<p>Open the Codeshell Extention Windows and use it.
+<p class="markdown-image">
+  <img src="/resources/image-6.png" alt="Alt text"  />
+</p></p>
+<h2 id="reference">Reference <a href="#reference" class="anchor">🔗</a></h2><p><a href="https://zhuanlan.zhihu.com/p/655365629" target="_blank" rel="noopener">大语言模型部署：基于llama.cpp在Ubuntu 22.04及CUDA环境中部署Llama-2 7B</a></p>
+<h2 id="预告">预告： <a href="#%e9%a2%84%e5%91%8a" class="anchor">🔗</a></h2><p>另外发现一个叫continue的VSCode coding copilot插件，可以支持多种后端接口（如TGI，Text Generation Webui，OpenAI等）来调用远程或者本地部署的LLM推理服务。目前正在尝试本地部署，后续会推出搭建指引的分享。</p>
+
+    </div>
+
+    
+    
+    
+  <div id="comment">
+    
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "your-disqus-shortname" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </div>
+
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+        <div id="social">
+
+
+    <a class="symbol" href="https://github.com/alexhegit" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28"  viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>Github</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-264.000000, -939.000000)">
+            <g id="Github" transform="translate(264.000000, 939.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M35.9985,13 C22.746,13 12,23.7870921 12,37.096644 C12,47.7406712 18.876,56.7718301 28.4145,59.9584121 C29.6145,60.1797862 30.0525,59.4358488 30.0525,58.7973276 C30.0525,58.2250681 30.0315,56.7100863 30.0195,54.6996482 C23.343,56.1558981 21.9345,51.4693938 21.9345,51.4693938 C20.844,48.6864054 19.2705,47.9454799 19.2705,47.9454799 C17.091,46.4500754 19.4355,46.4801943 19.4355,46.4801943 C21.843,46.6503662 23.1105,48.9634994 23.1105,48.9634994 C25.2525,52.6455377 28.728,51.5823398 30.096,50.9649018 C30.3135,49.4077535 30.9345,48.3460615 31.62,47.7436831 C26.2905,47.1352808 20.688,45.0691228 20.688,35.8361671 C20.688,33.2052792 21.6225,31.0547881 23.1585,29.3696344 C22.911,28.7597262 22.0875,26.3110578 23.3925,22.9934585 C23.3925,22.9934585 25.4085,22.3459017 29.9925,25.4632101 C31.908,24.9285993 33.96,24.6620468 36.0015,24.6515052 C38.04,24.6620468 40.0935,24.9285993 42.0105,25.4632101 C46.5915,22.3459017 48.603,22.9934585 48.603,22.9934585 C49.9125,26.3110578 49.089,28.7597262 48.8415,29.3696344 C50.3805,31.0547881 51.309,33.2052792 51.309,35.8361671 C51.309,45.0917119 45.6975,47.1292571 40.3515,47.7256117 C41.2125,48.4695491 41.9805,49.9393525 41.9805,52.1877301 C41.9805,55.4089489 41.9505,58.0067059 41.9505,58.7973276 C41.9505,59.4418726 42.3825,60.1918338 43.6005,59.9554002 C53.13,56.7627944 60,47.7376593 60,37.096644 C60,23.7870921 49.254,13 35.9985,13" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="your-github-link" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    
+    <title>stackoverflow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Social-Icons---Rounded-Black" transform="translate(-488.000000, -1163.000000)">
+            <g id="stackoverflow" transform="translate(488.000000, 1163.000000)">
+                <path d="M8,72 L64,72 C68.418278,72 72,68.418278 72,64 L72,8 C72,3.581722 68.418278,-8.11624501e-16 64,0 L8,0 C3.581722,8.11624501e-16 -5.41083001e-16,3.581722 0,8 L0,64 C5.41083001e-16,68.418278 3.581722,72 8,72 Z" id="Rounded" fill="#bbbbbb"></path>
+                <path d="M42.0860128,53.5922927 L22.9745951,53.6011499 L22.9729497,49.5538824 L42.0835447,49.5440929 L42.0860128,53.5922927 L42.0860128,53.5922927 Z M55,30.6708298 L51.7306912,12 L47.7087256,12.6920259 L50.9775643,31.3628557 L55,30.6708298 L55,30.6708298 Z M42.5455518,44.3547147 L23.5156994,42.616026 L23.1410164,46.6470941 L42.1712214,48.3841513 L42.5455518,44.3547147 L42.5455518,44.3547147 Z M43.8009984,39.0731519 L25.3459811,34.1539179 L24.285633,38.0621508 L42.7419431,42.9819676 L43.8009984,39.0731519 L43.8009984,39.0731519 Z M46.2103463,34.4436411 L29.7494464,24.8164635 L27.6748215,28.3015328 L44.1365441,37.9292931 L46.2103463,34.4436411 L46.2103463,34.4436411 Z M50.2466504,31.6088756 L46.8745036,33.8883189 L36.106599,18.2318456 L39.4792159,15.9517031 L50.2466504,31.6088756 Z M45.3315807,40.2784283 L48.5799693,40.2784283 L48.5799693,60 L17,60 L17,40.2784283 L20.2648427,40.2784283 L20.2648427,56.8243495 L45.3315807,56.8243495 L45.3315807,40.2784283 Z" fill="#FFFFFF"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+    </a>
+
+    <a class="symbol" href="your-github-link" rel="me" target="_blank">
+        
+        <svg fill="#bbbbbb" width="28" height="28" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="438.536px" height="438.536px" viewBox="0 0 438.536 438.536" style="enable-background:new 0 0 438.536 438.536;"
+	 xml:space="preserve">
+<g>
+	<path d="M414.41,24.123C398.333,8.042,378.963,0,356.315,0H82.228C59.58,0,40.21,8.042,24.126,24.123
+		C8.045,40.207,0.003,59.576,0.003,82.225v274.084c0,22.647,8.042,42.018,24.123,58.102c16.084,16.084,35.454,24.126,58.102,24.126
+		h274.084c22.648,0,42.018-8.042,58.095-24.126c16.084-16.084,24.126-35.454,24.126-58.102V82.225
+		C438.532,59.576,430.49,40.204,414.41,24.123z M335.471,168.735c0.191,1.713,0.288,4.278,0.288,7.71
+		c0,15.989-2.334,32.025-6.995,48.104c-4.661,16.087-11.8,31.504-21.416,46.254c-9.606,14.749-21.074,27.791-34.396,39.115
+		c-13.325,11.32-29.311,20.365-47.968,27.117c-18.648,6.762-38.637,10.143-59.953,10.143c-33.116,0-63.76-8.952-91.931-26.836
+		c4.568,0.568,9.329,0.855,14.275,0.855c27.6,0,52.439-8.565,74.519-25.7c-12.941-0.185-24.506-4.179-34.688-11.991
+		c-10.185-7.803-17.273-17.699-21.271-29.691c4.947,0.76,8.658,1.137,11.132,1.137c4.187,0,9.042-0.76,14.56-2.279
+		c-13.894-2.669-25.598-9.562-35.115-20.697c-9.519-11.136-14.277-23.84-14.277-38.114v-0.571
+		c10.085,4.755,19.602,7.229,28.549,7.422c-17.321-11.613-25.981-28.265-25.981-49.963c0-10.66,2.758-20.747,8.278-30.264
+		c15.035,18.464,33.311,33.213,54.816,44.252c21.507,11.038,44.54,17.227,69.092,18.558c-0.95-3.616-1.427-8.186-1.427-13.704
+		c0-16.562,5.853-30.692,17.56-42.399c11.703-11.706,25.837-17.561,42.394-17.561c17.515,0,32.079,6.283,43.688,18.846
+		c13.134-2.474,25.892-7.33,38.26-14.56c-4.757,14.652-13.613,25.788-26.55,33.402c12.368-1.716,23.88-4.95,34.537-9.708
+		C357.458,149.793,347.462,160.166,335.471,168.735z"/>
+</g>
+</svg>
+
+    </a>
+
+
+</div>
+
+    
+
+    <div class="copyright">
+    
+       © Copyright 
+       2023 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       Alex He &lt;heye_dev@163.com&gt;
+    
+    </div>
+
+    
+      <div class="powerby">
+        Powered by <a href='http://www.gohugo.io/'>Hugo</a> Theme By <a href='https://github.com/nodejh/hugo-theme-mini'>nodejh</a>
+      </div>
+    
+</footer>
+
+
+
+  </body>
+</html>

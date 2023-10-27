@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Alex He&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Oct 2023 21:04:08 +0800</lastBuildDate><atom:link href="https://alexhegit.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 27 Oct 2023 13:10:52 +0800</lastBuildDate><atom:link href="https://alexhegit.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deploy CodeShell W VSCode</title>
+      <link>https://alexhegit.github.io/posts/deploy-codeshell-w-vscode/</link>
+      <pubDate>Fri, 27 Oct 2023 13:10:52 +0800</pubDate>
+      
+      <guid>https://alexhegit.github.io/posts/deploy-codeshell-w-vscode/</guid>
+      <description>本地化部署Coding Copilot - CodeShell with VSCode 🔗Coding Copilot LLM CodeShell VSCode CodeShell是刚刚推出的代码辅助LLM。抛开性能不谈，其显著优势在于可以借助ll</description>
+    </item>
+    
     <item>
       <title>Build Blog with Hugo&amp;GitHub</title>
       <link>https://alexhegit.github.io/posts/build-blog-with-hugogithub/</link>
