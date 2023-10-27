@@ -111,15 +111,17 @@
     <div class="content">
       <h1 id="本地化部署coding-copilot---codeshell-with-vscode">本地化部署Coding Copilot - CodeShell with VSCode <a href="#%e6%9c%ac%e5%9c%b0%e5%8c%96%e9%83%a8%e7%bd%b2coding-copilot---codeshell-with-vscode" class="anchor">🔗</a></h1><p><code>Coding Copilot</code> <code>LLM</code> <code>CodeShell</code> <code>VSCode</code></p>
 <p>CodeShell是刚刚推出的代码辅助LLM。抛开性能不谈，<strong>其显著优势在于可以借助llama.cpp或者TGI(Text Generation Interface)以及VSCode Extention来本地化部署来提升生产力</strong>，得益于llama.cpp的项目，其相关部署步骤也比较简单（个人认为TGI相对要复杂一些）。而同类型的LLM如CodeGeeX的VSCode Extention需要依赖云端部署的模型推理服务。虽然CodeGeeX远程服务目前是免费的，但需要申请账号且每日有使用次数限制。至于其他众多依赖于GPT的coding copilot插件则必须要付费买KEY。</p>
-<h2 id="codeshell-introduction">CodeShell Introduction <a href="#codeshell-introduction" class="anchor">🔗</a></h2><p>HG Model Card: <a href="https://huggingface.co/WisdomShell/CodeShell-7B-Chat" target="_blank" rel="noopener">https://huggingface.co/WisdomShell/CodeShell-7B-Chat</a>
-Github Home Page: <a href="https://github.com/WisdomShell" target="_blank" rel="noopener">https://github.com/WisdomShell</a></p>
+<h2 id="codeshell-introduction">CodeShell Introduction <a href="#codeshell-introduction" class="anchor">🔗</a></h2><p>HG Model Card: <a href="https://huggingface.co/WisdomShell/CodeShell-7B-Chat" target="_blank" rel="noopener">https://huggingface.co/WisdomShell/CodeShell-7B-Chat</a></p>
+<p>Github Home Page: <a href="https://github.com/WisdomShell" target="_blank" rel="noopener">https://github.com/WisdomShell</a></p>
 <p>CodeShell是北京大学知识计算实验室联合四川天府银行AI团队研发的多语言代码大模型基座。CodeShell具有70亿参数，在五千亿Tokens进行了训练，上下文窗口长度为8192。在权威的代码评估Benchmark（HumanEval与MBPP）上，CodeShell取得同等规模最好的性能。与此同时，我们提供了与CodeShell配套的部署方案与IDE插件，请参考代码库CodeShell。</p>
 <p>CodeShell is a multi-language code LLM developed by the Knowledge Computing Lab of Peking University. CodeShell has 7 billion parameters and was trained on 500 billion tokens with a context window length of 8194. On authoritative code evaluation benchmarks (HumanEval and MBPP), CodeShell achieves the best performance of its scale. Meanwhile, we provide deployment solutions and IDE plugins that complement CodeShell. Please refer to the CodeShell code repository for more details. This repository is for the CodeShell-7B-Chat model.</p>
 <p>本次开源的模型如下：</p>
-<p>CodeShell Base：CodelShell底座模型，具有强大的代码基础能力。
-CodeShell Chat：CodelShell对话模型，在代码问答、代码补全等下游任务重性能优异。
-CodeShell Chat 4bit：CodelShell对话模型4bit量化版本，在保证模型性能的前提下内存消耗更小，速度更快。
-CodeShell CPP：CodelShell对话模型CPP版本，支持开发者在没有GPU的个人电脑中使用。注意，CPP版本同样支持量化操作，用户可以在最小内存为8G的个人电脑中运行CodeShell。</p>
+<ul>
+<li>CodeShell Base：CodelShell底座模型，具有强大的代码基础能力。</li>
+<li>CodeShell Chat：CodelShell对话模型，在代码问答、代码补全等下游任务重性能优异。</li>
+<li>CodeShell Chat 4bit：CodelShell对话模型4bit量化版本，在保证模型性能的前提下内存消耗更小，速度更快。</li>
+<li>CodeShell CPP：CodelShell对话模型CPP版本，支持开发者在没有GPU的个人电脑中使用。注意，CPP版本同样支持量化操作，用户可以在最小内存为8G的个人电脑中运行CodeShell。</li>
+</ul>
 <h2 id="deploy-codeshell-with-llamacpp">Deploy CodeShell with llama.cpp <a href="#deploy-codeshell-with-llamacpp" class="anchor">🔗</a></h2><h3 id="build-llamacpp-project-wsl2">Build llama.cpp project (WSL2) <a href="#build-llamacpp-project-wsl2" class="anchor">🔗</a></h3><p>WisdomShell fork it from ggerganov/llama.cpp and add somethings to support codeshell model.</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ git clone git clone https://github.com/WisdomShell/llama_cpp_for_codeshell.git
 
@@ -134,15 +136,15 @@ $ cd llama_cpp_for_codeshell
 <p>The convert-codeshell-hf-to-gguf.py is for codeshell.
 Check the options:
 <p class="markdown-image">
-  <img src="/resources/image-1.png" alt="Alt text"  />
+  <img src="resources/image-1.png" alt="Alt text"  />
 </p></p>
 <p>Convert it:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ./convert-codeshell-hf-to-gguf.py /mnt/d/LLM_Files/codeshell/CodeShell-7B-Chat/ 1 --outfile ./models/codeshell-7b-chat-f16.gguf
 </code></pre></div><p><p class="markdown-image">
-  <img src="/resources/image.png" alt="Alt text"  />
+  <img src="resources/image.png" alt="Alt text"  />
 </p></p>
 <p><p class="markdown-image">
-  <img src="/resources/image-2.png" alt="Alt text"  />
+  <img src="resources/image-2.png" alt="Alt text"  />
 </p></p>
 <p>Quantize it:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ./quantize ./models/codeshell-7b-chat-f16.gguf ./models/codeshell-7b-chat-q4_0.gguf  q4_0
@@ -158,20 +160,20 @@ Simple Chat:
 $ ./main -m ./models/codeshell-7b-chat-q4_0.gguf -n 1024 --repeat_penalty 1.0 --color -i -r &#34;User:&#34; -f prompts/chat-with-bob.txt
 
 </code></pre></div><p><p class="markdown-image">
-  <img src="/resources/image-3.png" alt="Alt text"  />
+  <img src="resources/image-3.png" alt="Alt text"  />
 </p></p>
 <h2 id="install-codeshell-extention-of-vscode">Install CodeShell Extention of VSCode <a href="#install-codeshell-extention-of-vscode" class="anchor">🔗</a></h2><p>It&rsquo;s so easy to install CodeShell Extention in VSCode. Got it from the Extentions Market as others you have done before.</p>
 <h3 id="setup-codeshell-extention">Setup CodeShell Extention <a href="#setup-codeshell-extention" class="anchor">🔗</a></h3><p>The CodeShell Extention support two model inference server backend, one is llama.cpp+CPU and another is TGI+GPU. Here I will show the llama.cpp+CPU which is the default backend.</p>
 <p>Make sure the settings like this:
 <p class="markdown-image">
-  <img src="/resources/image-5.png" alt="Alt text"  />
+  <img src="resources/image-5.png" alt="Alt text"  />
 </p></p>
 <h2 id="start-the-model-inference-server-by-llamacpp">Start the model inference server by llama.cpp <a href="#start-the-model-inference-server-by-llamacpp" class="anchor">🔗</a></h2><p>The llama.cpp provide the &lsquo;server&rsquo; bin to start the inference server.
 Server it:</p>
 <div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">$ ./server -m ./models/codeshell-7b-chat-q4_0.gguf -n 1024
 </code></pre></div><p>The default URL of server is http://127.0.0.1:8080, Open it in broswer will see it like:
 <p class="markdown-image">
-  <img src="/resources/image-4.png" alt="Alt text"  />
+  <img src="resources/image-4.png" alt="Alt text"  />
 </p></p>
 <p>Then you can use it in brower or from VSCode</p>
 <p>More info: <a href="https://github.com/WisdomShell/llama_cpp_for_codeshell/blob/master/examples/server/README.md" target="_blank" rel="noopener">https://github.com/WisdomShell/llama_cpp_for_codeshell/blob/master/examples/server/README.md</a></p>
@@ -183,7 +185,7 @@ Server it:</p>
 </ol>
 <p>Open the Codeshell Extention Windows and use it.
 <p class="markdown-image">
-  <img src="/resources/image-6.png" alt="Alt text"  />
+  <img src="resources/image-6.png" alt="Alt text"  />
 </p></p>
 <h2 id="reference">Reference <a href="#reference" class="anchor">🔗</a></h2><p><a href="https://zhuanlan.zhihu.com/p/655365629" target="_blank" rel="noopener">大语言模型部署：基于llama.cpp在Ubuntu 22.04及CUDA环境中部署Llama-2 7B</a></p>
 <h2 id="预告">预告： <a href="#%e9%a2%84%e5%91%8a" class="anchor">🔗</a></h2><p>另外发现一个叫continue的VSCode coding copilot插件，可以支持多种后端接口（如TGI，Text Generation Webui，OpenAI等）来调用远程或者本地部署的LLM推理服务。目前正在尝试本地部署，后续会推出搭建指引的分享。</p>
