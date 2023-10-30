@@ -59,13 +59,13 @@
           ·
         </span>
         <span>
-          2309字
+          2924字
         </span>
         <span class="split">
           ·
         </span>
         <span>
-          5分钟
+          6分钟
         </span>
     </div>
 
@@ -99,6 +99,11 @@
     <li><a href="#将生成的静态网页部署到github上">将生成的静态网页部署到github上</a>
       <ul>
         <li><a href="#将生成的blog网页托管至github-pages-repo">将生成的Blog网页托管至github pages repo</a></li>
+      </ul>
+    </li>
+    <li><a href="#关于后续新发布内容的操作细节">关于后续新发布内容的操作细节</a>
+      <ul>
+        <li><a href="#发布流程">发布流程</a></li>
       </ul>
     </li>
     <li><a href="#一些问题及解决方法">一些问题及解决方法</a></li>
@@ -261,6 +266,61 @@ $ hugo</li>
     $ git branch -M main
     $ git push -u origin main
 </code></pre></div><p>提交完成后，所见即所得 <a href="https://alexhegit.github.io" target="_blank" rel="noopener">Alex He&rsquo;s Blog</a></p>
+<h2 id="关于后续新发布内容的操作细节">关于后续新发布内容的操作细节 <a href="#%e5%85%b3%e4%ba%8e%e5%90%8e%e7%bb%ad%e6%96%b0%e5%8f%91%e5%b8%83%e5%86%85%e5%ae%b9%e7%9a%84%e6%93%8d%e4%bd%9c%e7%bb%86%e8%8a%82" class="anchor">🔗</a></h2><h3 id="发布流程">发布流程 <a href="#%e5%8f%91%e5%b8%83%e6%b5%81%e7%a8%8b" class="anchor">🔗</a></h3><p>基于上面的描述，您已经构建好了2个git repo。后续新增内容的发布流程将简化为：</p>
+<ol>
+<li>
+<p>在Hugo blog repo中post一个新的内容。</p>
+<ul>
+<li>这里建议为每一个新的内容build出一个子目录。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">例如：这里我将建立一个新的主题发布“Deploy-CodeShell-w-VSCode”
+$hugo new posts/Deploy-CodeShell-w-VSCode  //创建新主题及目录,及默认主题的md文件
+$mkdir posts/Deploy-CodeShell-w-VSCode/resources  //创建资源目录，在此可以放置md使用的图片
+
+将hugo自动创建的发布md重新命名为index.md(这样才可以build出可引用图片资源内容页面)
+$mv posts/Deploy-CodeShell-w-VSCode/Deploy-CodeShell-w-VSCode.md posts/Deploy-CodeShell-w-VSCode/index.md
+</code></pre></div><p>该发布的目录结构如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback"> $ tree content/posts/
+content/posts/
+├── Deploy-CodeShell-w-VSCode
+│   ├── index.md
+│   └── resources
+│       ├── image-1.png
+│       ├── image-2.png
+│       ├── image-3.png
+│       ├── image-4.png
+│       ├── image-5.png
+│       ├── image-6.png
+│       └── image.png
+</code></pre></div></li>
+<li>
+<p>填写内容，测试内容完成后build出页面结果</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">在创建出的index.md中，编辑发布内容。测试，并在浏览器中观察结果
+$hugo server -D
+确认内容可发布后，将index.md中的draft字段值从&#34;true&#34;改为&#34;false&#34;
+</code></pre></div></li>
+<li>
+<p>提交新内容到Hugo blog repo</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">将本次新创建的post内容文件及资源文件，提交同步到githug remote repo。
+$git add .
+$git commit -a -s
+$git push
+</code></pre></div></li>
+<li>
+<p>在public子目录中，即github page repo中，commit/push新的内容</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">build新发布内容
+$hugo
+在public子目录下将自动生成新内容相关的输出文件
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">同布内容到github page repo
+$cd public
+$git add .
+$git commit -a -s
+$git push
+</code></pre></div></li>
+<li>
+<p>登录github page浏览新发布</p>
+</li>
+</ol>
 <h2 id="一些问题及解决方法">一些问题及解决方法 <a href="#%e4%b8%80%e4%ba%9b%e9%97%ae%e9%a2%98%e5%8f%8a%e8%a7%a3%e5%86%b3%e6%96%b9%e6%b3%95" class="anchor">🔗</a></h2><ul>
 <li>WSL-Ubuntu系统中git使用报错问题解决：GnuTLS recv error (-110): The TLS connection was non-properly terminated   <a href="https://zhuanlan.zhihu.com/p/624555732" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/624555732</a></li>
 <li>如何为Git生成并设置GPG签名:
